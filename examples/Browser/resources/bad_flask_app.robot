@@ -35,7 +35,7 @@ Open Browser To Our Application
 
 # Exercise 03
 Close Dropdown If Opened
-    ${visible}=     Get Element State       .dropdown-menu>li>a     visible
+    ${visible}=     Get Element State       ${OPENED DROPDOWN}     visible
     Run Keyword If      ${visible}      Click       ${OPENED DROPDOWN}
 
 # Exercise 03
