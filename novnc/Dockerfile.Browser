@@ -1,0 +1,73 @@
+FROM ubuntu:focal
+
+# Prepare for node12
+RUN apt-get update && apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_12.x | bash -
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nodejs \
+    libwoff1 \
+    libopus0 \
+    libwebp6 \
+    libwebpdemux2 \
+    libenchant1c2a \
+    libgudev-1.0-0 \
+    libsecret-1-0 \
+    libhyphen0 \
+    libgdk-pixbuf2.0-0 \
+    libegl1 \
+    libnotify4 \
+    libxslt1.1 \
+    libevent-2.1-7 \
+    libgles2 \
+    # Not available for focal libvpx5 \
+    libxcomposite1 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libepoxy0 \
+    libgtk-3-0 \
+    libharfbuzz-icu0 \
+    # Install gstreamer and plugins to support video playback in WebKit \
+    libgstreamer-gl1.0-0 \
+    libgstreamer-plugins-bad1.0-0 \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-libav \
+    # Install Chromium dependencies \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    fonts-noto-color-emoji \
+    libxtst6 \
+    # Install Firefox dependencies \
+    libdbus-glib-1-2 \
+    libxt6 \
+    # Install ffmpeg to bring in audio and video codecs necessary for playing videos in Firefox \
+    ffmpeg \
+    # Install vnc stuff \
+    bspwm novnc python3-venv xfonts-base supervisor x11vnc xvfb fswatch && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -r user -g 1000 \
+    && useradd -r -g user -G audio,video user -u 1000 \
+    && mkdir -p /home/user \
+    && chown -R user:user /home/user
+
+USER user
+ADD ./requirements-Browser.txt /home/user/requirements.txt
+RUN python3 -m venv /home/user/venv \
+    && /home/user/venv/bin/pip3 install -r /home/user/requirements.txt
+    && /home/user/venv/bin/rfbrowser init \
+    && rm -rf /home/user/.npm
+USER root
+
+ADD ./bspwmrc /home/user/.config/bspwm/bspwmrc
+ADD ./supervisord.conf /etc/supervisord.conf
+ADD ./run.sh /bin/run.sh
+
+ADD ./robot.sh /bin/robot.sh
+ADD ./index.html /usr/share/novnc/index.html
+
+CMD [ "/bin/run.sh" ]

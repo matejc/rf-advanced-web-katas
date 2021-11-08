@@ -1,0 +1,43 @@
+FROM ubuntu:focal
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # requirements for apt-key \
+    gnupg \
+    firefox-geckodriver \
+    # Install vnc stuff \
+    bspwm novnc python3-venv xfonts-base supervisor x11vnc xvfb fswatch && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+
+RUN apt-get update && apt-get install -y --no-install-recommends unzip google-chrome-stable
+
+RUN CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]*\.[^\.]*\.[^\.]*") && \
+    DRIVERVER=$(wget -O - -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
+    wget -q --continue -P /chromedriver "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
+    unzip /chromedriver/chromedriver* -d /chromedriver && \
+    install /chromedriver/chromedriver /usr/bin/chromedriver
+
+RUN groupadd -r user -g 1000 \
+    && useradd -r -g user -G audio,video user -u 1000 \
+    && mkdir -p /home/user \
+    && chown -R user:user /home/user
+
+USER user
+ADD ./requirements-SeleniumLibrary.txt /home/user/requirements.txt
+RUN python3 -m venv /home/user/venv \
+    && /home/user/venv/bin/pip3 install -r /home/user/requirements.txt
+USER root
+
+ADD ./bspwmrc /home/user/.config/bspwm/bspwmrc
+ADD ./supervisord.conf /etc/supervisord.conf
+ADD ./run.sh /bin/run.sh
+
+ADD ./robot.sh /bin/robot.sh
+ADD ./index.html /usr/share/novnc/index.html
+
+CMD [ "/bin/run.sh" ]

@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+
+  webapp:
+    build:
+      context: ../bad-flask-app
+    network_mode: service:robot
+    logging:
+      driver: none
+
+  robot:
+    build:
+      context: .
+      dockerfile: "Dockerfile.${ROBOT_LIBRARY:-Browser}"
+    volumes:
+      - "../examples/${ROBOT_LIBRARY:-Browser}:/home/user/source"
+      - "./logs:/home/user/logs"
+    ports:
+      - 6080:6080
+      - 5000:5000
+    shm_size: 2g
+    security_opt:
+      - label=disable
