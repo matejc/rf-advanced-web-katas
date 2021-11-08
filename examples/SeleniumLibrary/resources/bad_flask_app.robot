@@ -106,7 +106,7 @@ Change Important Number
 
 # Exercise 08
 Submit Form
-    Run Inside Iframe  ${FORM_IFRAME}   Click Element           ${BUTTON}
+    Run Inside Iframe  ${FORM_IFRAME}   Click Element           ${SHOW FORM BUTTON}
 
 # Exercise 08
 Validate That Form Submit Succeeded
