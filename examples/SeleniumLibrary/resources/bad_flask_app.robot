@@ -36,6 +36,7 @@ Close Dropdown If Opened
 # Exercise 03
 Show Form
     Click Element       ${SHOW FORM BUTTON}
+    Wait Until Element Is Visible   xpath://iframe[@style='']   timeout=3s
 
 # Exercise 04
 Run Inside Iframe
