@@ -44,6 +44,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxt6 \
     # Install ffmpeg to bring in audio and video codecs necessary for playing videos in Firefox \
     ffmpeg \
+    python3-tk \
     # Install vnc stuff \
     bspwm novnc python3-venv xfonts-base supervisor x11vnc xvfb fswatch && \
     apt-get autoremove -y && \
@@ -58,7 +59,7 @@ RUN groupadd -r user -g 1000 \
 USER user
 ADD ./requirements-Browser.txt /home/user/requirements.txt
 RUN python3 -m venv /home/user/venv \
-    && /home/user/venv/bin/pip3 install -r /home/user/requirements.txt
+    && /home/user/venv/bin/pip3 install -r /home/user/requirements.txt \
     && /home/user/venv/bin/rfbrowser init \
     && rm -rf /home/user/.npm
 USER root
