@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # requirements for apt-key \
     gnupg \
     firefox-geckodriver \
+    python3-tk \
     # Install vnc stuff \
     bspwm novnc python3-venv xfonts-base supervisor x11vnc xvfb fswatch && \
     apt-get autoremove -y && \
