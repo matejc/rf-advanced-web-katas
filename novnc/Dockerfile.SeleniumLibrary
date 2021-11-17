@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     firefox-geckodriver \
     python3-tk \
     # Install vnc stuff \
-    bspwm novnc python3-venv xfonts-base supervisor x11vnc xvfb fswatch && \
+    bspwm novnc python3-pip xfonts-base supervisor x11vnc xvfb fswatch && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -23,18 +23,17 @@ RUN CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]*\.[^\.]*\.[^\.]
     unzip /chromedriver/chromedriver* -d /chromedriver && \
     install /chromedriver/chromedriver /usr/bin/chromedriver
 
-RUN groupadd -r user -g 1000 \
-    && useradd -r -g user -G audio,video user -u 1000 \
-    && mkdir -p /home/user \
-    && chown -R user:user /home/user
+RUN groupadd -r pwuser -g 1000 \
+    && useradd -r -g pwuser -G audio,video pwuser -u 1000 \
+    && mkdir -p /home/pwuser \
+    && chown -R pwuser:pwuser /home/pwuser
 
-USER user
-ADD ./requirements-SeleniumLibrary.txt /home/user/requirements.txt
-RUN python3 -m venv /home/user/venv \
-    && /home/user/venv/bin/pip3 install -r /home/user/requirements.txt
+USER pwuser
+ADD ./requirements-SeleniumLibrary.txt /home/pwuser/requirements.txt
+RUN python3 -m pip install --user -r /home/pwuser/requirements.txt
 USER root
 
-ADD ./bspwmrc /home/user/.config/bspwm/bspwmrc
+ADD ./bspwmrc /home/pwuser/.config/bspwm/bspwmrc
 ADD ./supervisord.conf /etc/supervisord.conf
 ADD ./run.sh /bin/run.sh
 
