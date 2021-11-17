@@ -13,8 +13,8 @@ services:
       context: .
       dockerfile: "Dockerfile.${ROBOT_LIBRARY:-Browser}"
     volumes:
-      - "../examples/${ROBOT_LIBRARY:-Browser}:/home/user/source"
-      - "./logs:/home/user/logs"
+      - "../examples/${ROBOT_LIBRARY:-Browser}:/home/pwuser/source"
+      - "./.logs:/home/pwuser/logs"
     ports:
       - 6080:6080
       - 5000:5000
