@@ -35,11 +35,11 @@ Open `http://localhost:6080` in your favorite browser.
 
 ### Trigger the robot
 
-To trigger the run of the robot, modify `robot` file inside `tests` or `resources` directory.
+To trigger the run of the robot, modify a file inside your `tests` or `resources` directory.
 
 
 ## TODOs
 
-- Tests for rf-advanced-web-katas for all OS-es * Browser+SeleniumLibrary * Chrome+Firefox (with Nix should be somewhat simple)
-- Browser: use official Docker image (https://github.com/MarketSquare/robotframework-browser/tree/main/docker)
-- SeleniumLibrary: use official Docker images (https://hub.docker.com/u/selenium)
+- Tests for rf-advanced-web-katas for all OS-es * Browser+SeleniumLibrary * Chrome+Firefox
+- Documentation!
+- Base Dockerfile-s (to auto-build and push on Docker Hub)
