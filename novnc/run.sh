@@ -3,8 +3,6 @@ set -e
 
 chown -R pwuser:pwuser /home/pwuser/.config
 
-chmod -R o+rw /home/pwuser/source
-
 mkdir -p /home/pwuser/logs
 chmod -R o+rw /home/pwuser/logs
 

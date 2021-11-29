@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
 PATH="/home/pwuser/.local/bin:$PATH"
@@ -9,17 +9,17 @@ ROBOT_ROOT_PATH="${ROBOT_ROOT_PATH:-/home/pwuser/source}"
 trap "kill 0" EXIT
 trap "exit" INT TERM
 
-if [ -z "$ROBOT_RUN_ONCE" ]
+if [ ! -z "$ROBOT_WATCH" ]
 then
 
     while true
     do
         fswatch --event=Updated --insensitive --exclude='.*\.log$' --recursive --one-event $ROBOT_ROOT_PATH >/dev/null
-        robot -d $ROBOT_OUTPUT $ROBOT_ROOT_PATH/tests || true
+        robot $ROBOT_ARGS -d $ROBOT_OUTPUT $ROBOT_ROOT_PATH/tests || true
     done
 
 else
 
-    robot -d $ROBOT_OUTPUT $ROBOT_ROOT_PATH/tests
+    robot $ROBOT_ARGS -d $ROBOT_OUTPUT $ROBOT_ROOT_PATH/tests
 
 fi
